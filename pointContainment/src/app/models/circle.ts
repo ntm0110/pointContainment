@@ -3,4 +3,5 @@ export interface Circle {
   y: number;
   width: number;
   height: number;
+  isContained: boolean;
 }
