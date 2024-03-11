@@ -84,8 +84,6 @@ export class AppComponent implements OnInit {
   }
 
   private isCircleContained(circle: Circle, rect: Rectangle): boolean {
-    console.log(circle);
-    console.log(rect);
     return (
       circle.x >= rect.x &&
       circle.x <= rect.x + rect.width &&
@@ -109,15 +107,16 @@ export class AppComponent implements OnInit {
   }
 
   private getRandomRect(): Rectangle {
+    const fudgeFactor = 50;
     const randomWidth = getRandomFloat(100, 500);
     const randomHeight = getRandomFloat(100, 500);
     const randomX = getRandomFloat(
-      -this.screenWidth / 2,
-      this.screenWidth / 2 - randomWidth
+      -this.screenWidth / 2 + fudgeFactor,
+      this.screenWidth / 2 - randomWidth - fudgeFactor
     );
     const randomY = getRandomFloat(
-      -this.screenHeight / 2 + randomHeight,
-      this.screenHeight / 2
+      -this.screenHeight / 2 + fudgeFactor,
+      this.screenHeight / 2 - randomHeight - fudgeFactor
     );
     return { x: randomX, y: randomY, width: randomWidth, height: randomHeight };
   }
