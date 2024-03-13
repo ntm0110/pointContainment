@@ -4,6 +4,7 @@ import p5 from 'p5';
 import { Circle } from './models/circle';
 import { getRandomFloat } from './utils/random';
 import { Rectangle } from './models/rectangle';
+import { degreesToRadians, radiansToDegrees } from './utils/mathHelpers';
 
 const circleOpacity = 0.05;
 
@@ -15,6 +16,7 @@ const circleOpacity = 0.05;
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
+  randomAngle = degreesToRadians(getRandomFloat(0, 360));
   circles: Circle[] = [];
   containmentArea: Rectangle = {
     x: 0,
@@ -27,6 +29,11 @@ export class AppComponent implements OnInit {
   screenHeight = window.innerHeight;
 
   ngOnInit() {
+    console.log(
+      `Angle of rotation: rad: ${this.randomAngle} deg: ${radiansToDegrees(
+        this.randomAngle
+      )}`
+    );
     const sketch = (scene: p5) => {
       scene.setup = () => {
         scene.createCanvas(this.screenWidth, this.screenHeight);
@@ -56,12 +63,25 @@ export class AppComponent implements OnInit {
         this.showAxes(scene);
 
         scene.fill(255, 255, 255, 255);
+        scene.push();
+        scene.rotate(this.randomAngle);
         scene.rect(
           this.containmentArea.x,
           this.containmentArea.y,
           this.containmentArea.width,
           this.containmentArea.height
         );
+        scene.fill('orange');
+        scene.circle(this.containmentArea.x, this.containmentArea.y, 8);
+        scene.stroke('orange');
+        scene.strokeWeight(3);
+        scene.line(
+          this.containmentArea.x,
+          this.containmentArea.y,
+          this.containmentArea.x + this.containmentArea.width,
+          this.containmentArea.y
+        );
+        scene.pop();
 
         this.circles.forEach((c) => {
           const fillColor = c.isContained
@@ -84,6 +104,7 @@ export class AppComponent implements OnInit {
   }
 
   private isCircleContained(circle: Circle, rect: Rectangle): boolean {
+    // rotate rectangle points!
     return (
       circle.x >= rect.x &&
       circle.x <= rect.x + rect.width &&
@@ -118,6 +139,7 @@ export class AppComponent implements OnInit {
       -this.screenHeight / 2 + fudgeFactor,
       this.screenHeight / 2 - randomHeight - fudgeFactor
     );
-    return { x: randomX, y: randomY, width: randomWidth, height: randomHeight };
+    // return { x: randomX, y: randomY, width: randomWidth, height: randomHeight };
+    return { x: 0, y: 0, width: 200, height: 50 };
   }
 }
